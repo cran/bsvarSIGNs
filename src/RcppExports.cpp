@@ -14,12 +14,11 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// bsvar_sign_cpp
-Rcpp::List bsvar_sign_cpp(const int& S, const int& p, const arma::mat& Y, const arma::mat& X, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const Rcpp::List& prior, const bool show_progress, const int thin, const int& max_tries);
-static SEXP _bsvarSIGNs_bsvar_sign_cpp_try(SEXP SSEXP, SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP priorSEXP, SEXP show_progressSEXP, SEXP thinSEXP, SEXP max_triesSEXP) {
+// bsvar_sign_single_draw_cpp
+arma::field<arma::mat> bsvar_sign_single_draw_cpp(const int& p, const arma::mat& Y, const arma::mat& X, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& Nf, const Rcpp::List& prior, const int& max_tries, const int idx);
+static SEXP _bsvarSIGNs_bsvar_sign_single_draw_cpp_try(SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP NfSEXP, SEXP priorSEXP, SEXP max_triesSEXP, SEXP idxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const int& >::type S(SSEXP);
     Rcpp::traits::input_parameter< const int& >::type p(pSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
@@ -27,19 +26,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type sign_narrative(sign_narrativeSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type sign_B(sign_BSEXP);
     Rcpp::traits::input_parameter< const arma::field<arma::mat>& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Nf(NfSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List& >::type prior(priorSEXP);
-    Rcpp::traits::input_parameter< const bool >::type show_progress(show_progressSEXP);
-    Rcpp::traits::input_parameter< const int >::type thin(thinSEXP);
     Rcpp::traits::input_parameter< const int& >::type max_tries(max_triesSEXP);
-    rcpp_result_gen = Rcpp::wrap(bsvar_sign_cpp(S, p, Y, X, sign_irf, sign_narrative, sign_B, Z, prior, show_progress, thin, max_tries));
+    Rcpp::traits::input_parameter< const int >::type idx(idxSEXP);
+    rcpp_result_gen = Rcpp::wrap(bsvar_sign_single_draw_cpp(p, Y, X, sign_irf, sign_narrative, sign_B, Z, Nf, prior, max_tries, idx));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _bsvarSIGNs_bsvar_sign_cpp(SEXP SSEXP, SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP priorSEXP, SEXP show_progressSEXP, SEXP thinSEXP, SEXP max_triesSEXP) {
+RcppExport SEXP _bsvarSIGNs_bsvar_sign_single_draw_cpp(SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP NfSEXP, SEXP priorSEXP, SEXP max_triesSEXP, SEXP idxSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_bsvarSIGNs_bsvar_sign_cpp_try(SSEXP, pSEXP, YSEXP, XSEXP, sign_irfSEXP, sign_narrativeSEXP, sign_BSEXP, ZSEXP, priorSEXP, show_progressSEXP, thinSEXP, max_triesSEXP));
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_bsvar_sign_single_draw_cpp_try(pSEXP, YSEXP, XSEXP, sign_irfSEXP, sign_narrativeSEXP, sign_BSEXP, ZSEXP, NfSEXP, priorSEXP, max_triesSEXP, idxSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -54,7 +53,97 @@ RcppExport SEXP _bsvarSIGNs_bsvar_sign_cpp(SEXP SSEXP, SEXP pSEXP, SEXP YSEXP, S
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// bsvar_sign_par_cpp
+Rcpp::List bsvar_sign_par_cpp(const int& p, const arma::mat& Y, const arma::mat& X, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& Nf, const Rcpp::List& prior, const int& max_tries, const int idx);
+static SEXP _bsvarSIGNs_bsvar_sign_par_cpp_try(SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP NfSEXP, SEXP priorSEXP, SEXP max_triesSEXP, SEXP idxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const int& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::cube& >::type sign_irf(sign_irfSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type sign_narrative(sign_narrativeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type sign_B(sign_BSEXP);
+    Rcpp::traits::input_parameter< const arma::field<arma::mat>& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Nf(NfSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< const int& >::type max_tries(max_triesSEXP);
+    Rcpp::traits::input_parameter< const int >::type idx(idxSEXP);
+    rcpp_result_gen = Rcpp::wrap(bsvar_sign_par_cpp(p, Y, X, sign_irf, sign_narrative, sign_B, Z, Nf, prior, max_tries, idx));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_bsvar_sign_par_cpp(SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP NfSEXP, SEXP priorSEXP, SEXP max_triesSEXP, SEXP idxSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_bsvar_sign_par_cpp_try(pSEXP, YSEXP, XSEXP, sign_irfSEXP, sign_narrativeSEXP, sign_BSEXP, ZSEXP, NfSEXP, priorSEXP, max_triesSEXP, idxSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// bsvar_sign_cpp
+Rcpp::List bsvar_sign_cpp(const int& S, const int& p, const arma::mat& Y, const arma::mat& X, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& Nf, const Rcpp::List& prior, const bool show_progress, const int thin, const int& max_tries);
+static SEXP _bsvarSIGNs_bsvar_sign_cpp_try(SEXP SSEXP, SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP NfSEXP, SEXP priorSEXP, SEXP show_progressSEXP, SEXP thinSEXP, SEXP max_triesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const int& >::type S(SSEXP);
+    Rcpp::traits::input_parameter< const int& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::cube& >::type sign_irf(sign_irfSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type sign_narrative(sign_narrativeSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type sign_B(sign_BSEXP);
+    Rcpp::traits::input_parameter< const arma::field<arma::mat>& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Nf(NfSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< const bool >::type show_progress(show_progressSEXP);
+    Rcpp::traits::input_parameter< const int >::type thin(thinSEXP);
+    Rcpp::traits::input_parameter< const int& >::type max_tries(max_triesSEXP);
+    rcpp_result_gen = Rcpp::wrap(bsvar_sign_cpp(S, p, Y, X, sign_irf, sign_narrative, sign_B, Z, Nf, prior, show_progress, thin, max_tries));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_bsvar_sign_cpp(SEXP SSEXP, SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP NfSEXP, SEXP priorSEXP, SEXP show_progressSEXP, SEXP thinSEXP, SEXP max_triesSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_bsvar_sign_cpp_try(SSEXP, pSEXP, YSEXP, XSEXP, sign_irfSEXP, sign_narrativeSEXP, sign_BSEXP, ZSEXP, NfSEXP, priorSEXP, show_progressSEXP, thinSEXP, max_triesSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -91,7 +180,7 @@ RcppExport SEXP _bsvarSIGNs_bsvarSIGNs_structural_shocks(SEXP posterior_BSEXP, S
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -128,7 +217,7 @@ RcppExport SEXP _bsvarSIGNs_bsvarSIGNs_fitted_values(SEXP posterior_ASEXP, SEXP 
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -165,7 +254,7 @@ RcppExport SEXP _bsvarSIGNs_ir1_cpp(SEXP BSEXP, SEXP Theta0SEXP, SEXP horizonSEX
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -203,7 +292,7 @@ RcppExport SEXP _bsvarSIGNs_bsvarSIGNs_ir(SEXP posterior_BSEXP, SEXP posterior_T
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -239,7 +328,7 @@ RcppExport SEXP _bsvarSIGNs_bsvarSIGNs_hd(SEXP posterior_irf_TSEXP, SEXP structu
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -277,7 +366,7 @@ RcppExport SEXP _bsvarSIGNs_hd1_cpp(SEXP var_iSEXP, SEXP tSEXP, SEXP hSEXP, SEXP
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -311,31 +400,34 @@ RcppExport SEXP _bsvarSIGNs_bsvarSIGNs_fevd(SEXP posterior_irfSEXP) {
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
 }
 // forecast_bsvarSIGNs
-arma::cube forecast_bsvarSIGNs(arma::cube& posterior_Sigma, arma::cube& posterior_A, arma::vec& X_T, arma::mat& exogenous_forecast, arma::mat& cond_forecast, const int& horizon);
-static SEXP _bsvarSIGNs_forecast_bsvarSIGNs_try(SEXP posterior_SigmaSEXP, SEXP posterior_ASEXP, SEXP X_TSEXP, SEXP exogenous_forecastSEXP, SEXP cond_forecastSEXP, SEXP horizonSEXP) {
+Rcpp::List forecast_bsvarSIGNs(arma::cube& posterior_Sigma, arma::cube& posterior_A, arma::mat& posterior_hyper, arma::vec& X_T, arma::mat& exogenous_forecast, arma::mat& cond_forecast, const int& covid, const int& T, const int& horizon);
+static SEXP _bsvarSIGNs_forecast_bsvarSIGNs_try(SEXP posterior_SigmaSEXP, SEXP posterior_ASEXP, SEXP posterior_hyperSEXP, SEXP X_TSEXP, SEXP exogenous_forecastSEXP, SEXP cond_forecastSEXP, SEXP covidSEXP, SEXP TSEXP, SEXP horizonSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< arma::cube& >::type posterior_Sigma(posterior_SigmaSEXP);
     Rcpp::traits::input_parameter< arma::cube& >::type posterior_A(posterior_ASEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type posterior_hyper(posterior_hyperSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type X_T(X_TSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type exogenous_forecast(exogenous_forecastSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type cond_forecast(cond_forecastSEXP);
+    Rcpp::traits::input_parameter< const int& >::type covid(covidSEXP);
+    Rcpp::traits::input_parameter< const int& >::type T(TSEXP);
     Rcpp::traits::input_parameter< const int& >::type horizon(horizonSEXP);
-    rcpp_result_gen = Rcpp::wrap(forecast_bsvarSIGNs(posterior_Sigma, posterior_A, X_T, exogenous_forecast, cond_forecast, horizon));
+    rcpp_result_gen = Rcpp::wrap(forecast_bsvarSIGNs(posterior_Sigma, posterior_A, posterior_hyper, X_T, exogenous_forecast, cond_forecast, covid, T, horizon));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _bsvarSIGNs_forecast_bsvarSIGNs(SEXP posterior_SigmaSEXP, SEXP posterior_ASEXP, SEXP X_TSEXP, SEXP exogenous_forecastSEXP, SEXP cond_forecastSEXP, SEXP horizonSEXP) {
+RcppExport SEXP _bsvarSIGNs_forecast_bsvarSIGNs(SEXP posterior_SigmaSEXP, SEXP posterior_ASEXP, SEXP posterior_hyperSEXP, SEXP X_TSEXP, SEXP exogenous_forecastSEXP, SEXP cond_forecastSEXP, SEXP covidSEXP, SEXP TSEXP, SEXP horizonSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_bsvarSIGNs_forecast_bsvarSIGNs_try(posterior_SigmaSEXP, posterior_ASEXP, X_TSEXP, exogenous_forecastSEXP, cond_forecastSEXP, horizonSEXP));
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_forecast_bsvarSIGNs_try(posterior_SigmaSEXP, posterior_ASEXP, posterior_hyperSEXP, X_TSEXP, exogenous_forecastSEXP, cond_forecastSEXP, covidSEXP, TSEXP, horizonSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -350,7 +442,45 @@ RcppExport SEXP _bsvarSIGNs_forecast_bsvarSIGNs(SEXP posterior_SigmaSEXP, SEXP p
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// metropolis_R
+arma::mat metropolis_R(const int T, const int t0, arma::vec x, arma::mat Sigma, Rcpp::Function log_target);
+static SEXP _bsvarSIGNs_metropolis_R_try(SEXP TSEXP, SEXP t0SEXP, SEXP xSEXP, SEXP SigmaSEXP, SEXP log_targetSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const int >::type T(TSEXP);
+    Rcpp::traits::input_parameter< const int >::type t0(t0SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Sigma(SigmaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Function >::type log_target(log_targetSEXP);
+    rcpp_result_gen = Rcpp::wrap(metropolis_R(T, t0, x, Sigma, log_target));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_metropolis_R(SEXP TSEXP, SEXP t0SEXP, SEXP xSEXP, SEXP SigmaSEXP, SEXP log_targetSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_metropolis_R_try(TSEXP, t0SEXP, xSEXP, SigmaSEXP, log_targetSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -386,28 +516,28 @@ RcppExport SEXP _bsvarSIGNs_match_sign_narrative(SEXP EpsilonSEXP, SEXP sign_nar
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
 }
-// weight_narrative
-double weight_narrative(const int& T, arma::mat sign_narrative, const arma::cube& irf);
-static SEXP _bsvarSIGNs_weight_narrative_try(SEXP TSEXP, SEXP sign_narrativeSEXP, SEXP irfSEXP) {
+// log_weight_narrative
+double log_weight_narrative(const int& T, arma::mat sign_narrative, const arma::cube& irf);
+static SEXP _bsvarSIGNs_log_weight_narrative_try(SEXP TSEXP, SEXP sign_narrativeSEXP, SEXP irfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const int& >::type T(TSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type sign_narrative(sign_narrativeSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type irf(irfSEXP);
-    rcpp_result_gen = Rcpp::wrap(weight_narrative(T, sign_narrative, irf));
+    rcpp_result_gen = Rcpp::wrap(log_weight_narrative(T, sign_narrative, irf));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _bsvarSIGNs_weight_narrative(SEXP TSEXP, SEXP sign_narrativeSEXP, SEXP irfSEXP) {
+RcppExport SEXP _bsvarSIGNs_log_weight_narrative(SEXP TSEXP, SEXP sign_narrativeSEXP, SEXP irfSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_bsvarSIGNs_weight_narrative_try(TSEXP, sign_narrativeSEXP, irfSEXP));
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_log_weight_narrative_try(TSEXP, sign_narrativeSEXP, irfSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -422,7 +552,7 @@ RcppExport SEXP _bsvarSIGNs_weight_narrative(SEXP TSEXP, SEXP sign_narrativeSEXP
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -457,7 +587,7 @@ RcppExport SEXP _bsvarSIGNs_ZIRF(SEXP ZSEXP, SEXP irf_0SEXP) {
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -492,7 +622,7 @@ RcppExport SEXP _bsvarSIGNs_zero_restrictions(SEXP ZSEXP, SEXP vec_structuralSEX
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -528,7 +658,7 @@ RcppExport SEXP _bsvarSIGNs_g_fh(SEXP ZSEXP, SEXP A0SEXP, SEXP AplusSEXP) {
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -563,7 +693,7 @@ RcppExport SEXP _bsvarSIGNs_g_fh_vec(SEXP ZSEXP, SEXP vec_structuralSEXP) {
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -599,29 +729,29 @@ RcppExport SEXP _bsvarSIGNs_log_volume_element(SEXP ZSEXP, SEXP A0SEXP, SEXP Apl
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
 }
-// weight_zero
-double weight_zero(const arma::field<arma::mat>& Z, const arma::mat& B, const arma::mat& h_inv, const arma::mat& Q);
-static SEXP _bsvarSIGNs_weight_zero_try(SEXP ZSEXP, SEXP BSEXP, SEXP h_invSEXP, SEXP QSEXP) {
+// log_weight_zero
+double log_weight_zero(const arma::field<arma::mat>& Z, const arma::mat& B, const arma::mat& h_inv, const arma::mat& Q);
+static SEXP _bsvarSIGNs_log_weight_zero_try(SEXP ZSEXP, SEXP BSEXP, SEXP h_invSEXP, SEXP QSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const arma::field<arma::mat>& >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type B(BSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type h_inv(h_invSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Q(QSEXP);
-    rcpp_result_gen = Rcpp::wrap(weight_zero(Z, B, h_inv, Q));
+    rcpp_result_gen = Rcpp::wrap(log_weight_zero(Z, B, h_inv, Q));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _bsvarSIGNs_weight_zero(SEXP ZSEXP, SEXP BSEXP, SEXP h_invSEXP, SEXP QSEXP) {
+RcppExport SEXP _bsvarSIGNs_log_weight_zero(SEXP ZSEXP, SEXP BSEXP, SEXP h_invSEXP, SEXP QSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_bsvarSIGNs_weight_zero_try(ZSEXP, BSEXP, h_invSEXP, QSEXP));
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_log_weight_zero_try(ZSEXP, BSEXP, h_invSEXP, QSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -636,7 +766,7 @@ RcppExport SEXP _bsvarSIGNs_weight_zero(SEXP ZSEXP, SEXP BSEXP, SEXP h_invSEXP, 
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -671,42 +801,87 @@ RcppExport SEXP _bsvarSIGNs_rzeroQ(SEXP ZSEXP, SEXP irf_0SEXP) {
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
 }
 // rmatnorm_cpp
 arma::mat rmatnorm_cpp(const arma::mat& M, const arma::mat& U, const arma::mat& V);
-RcppExport SEXP _bsvarSIGNs_rmatnorm_cpp(SEXP MSEXP, SEXP USEXP, SEXP VSEXP) {
+static SEXP _bsvarSIGNs_rmatnorm_cpp_try(SEXP MSEXP, SEXP USEXP, SEXP VSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type M(MSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type U(USEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type V(VSEXP);
     rcpp_result_gen = Rcpp::wrap(rmatnorm_cpp(M, U, V));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_rmatnorm_cpp(SEXP MSEXP, SEXP USEXP, SEXP VSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_rmatnorm_cpp_try(MSEXP, USEXP, VSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // riwish_cpp
 arma::mat riwish_cpp(const arma::mat& S, const double& nu);
-RcppExport SEXP _bsvarSIGNs_riwish_cpp(SEXP SSEXP, SEXP nuSEXP) {
+static SEXP _bsvarSIGNs_riwish_cpp_try(SEXP SSEXP, SEXP nuSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type S(SSEXP);
     Rcpp::traits::input_parameter< const double& >::type nu(nuSEXP);
     rcpp_result_gen = Rcpp::wrap(riwish_cpp(S, nu));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_riwish_cpp(SEXP SSEXP, SEXP nuSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_riwish_cpp_try(SSEXP, nuSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // niw_cpp
 arma::field<arma::mat> niw_cpp(const arma::mat& Y, const arma::mat& X, const arma::mat& prior_B, const arma::mat& prior_V, const arma::mat& prior_S, const int& prior_nu);
-RcppExport SEXP _bsvarSIGNs_niw_cpp(SEXP YSEXP, SEXP XSEXP, SEXP prior_BSEXP, SEXP prior_VSEXP, SEXP prior_SSEXP, SEXP prior_nuSEXP) {
+static SEXP _bsvarSIGNs_niw_cpp_try(SEXP YSEXP, SEXP XSEXP, SEXP prior_BSEXP, SEXP prior_VSEXP, SEXP prior_SSEXP, SEXP prior_nuSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type prior_B(prior_BSEXP);
@@ -715,7 +890,31 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int& >::type prior_nu(prior_nuSEXP);
     rcpp_result_gen = Rcpp::wrap(niw_cpp(Y, X, prior_B, prior_V, prior_S, prior_nu));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_niw_cpp(SEXP YSEXP, SEXP XSEXP, SEXP prior_BSEXP, SEXP prior_VSEXP, SEXP prior_SSEXP, SEXP prior_nuSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_niw_cpp_try(YSEXP, XSEXP, prior_BSEXP, prior_VSEXP, prior_SSEXP, prior_nuSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // match_sign_irf
 bool match_sign_irf(const arma::mat& Q, const arma::cube& sign_irf, const arma::cube& irf);
@@ -748,14 +947,14 @@ RcppExport SEXP _bsvarSIGNs_match_sign_irf(SEXP QSEXP, SEXP sign_irfSEXP, SEXP i
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
 }
 // sample_Q
-arma::field<arma::mat> sample_Q(const int& p, const arma::mat& Y, const arma::mat& X, arma::mat& B, arma::mat& h_invp, arma::mat& chol_Sigma, const Rcpp::List& prior, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& max_tries);
-static SEXP _bsvarSIGNs_sample_Q_try(SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP BSEXP, SEXP h_invpSEXP, SEXP chol_SigmaSEXP, SEXP priorSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP max_triesSEXP) {
+arma::field<arma::mat> sample_Q(const int& p, const arma::mat& Y, const arma::mat& X, arma::mat& B, arma::mat& h_invp, arma::mat& chol_Sigma, const Rcpp::List& prior, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& Nf, const int& max_tries);
+static SEXP _bsvarSIGNs_sample_Q_try(SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP BSEXP, SEXP h_invpSEXP, SEXP chol_SigmaSEXP, SEXP priorSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP NfSEXP, SEXP max_triesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const int& >::type p(pSEXP);
@@ -769,16 +968,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type sign_narrative(sign_narrativeSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type sign_B(sign_BSEXP);
     Rcpp::traits::input_parameter< const arma::field<arma::mat>& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Nf(NfSEXP);
     Rcpp::traits::input_parameter< const int& >::type max_tries(max_triesSEXP);
-    rcpp_result_gen = Rcpp::wrap(sample_Q(p, Y, X, B, h_invp, chol_Sigma, prior, sign_irf, sign_narrative, sign_B, Z, max_tries));
+    rcpp_result_gen = Rcpp::wrap(sample_Q(p, Y, X, B, h_invp, chol_Sigma, prior, sign_irf, sign_narrative, sign_B, Z, Nf, max_tries));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _bsvarSIGNs_sample_Q(SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP BSEXP, SEXP h_invpSEXP, SEXP chol_SigmaSEXP, SEXP priorSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP max_triesSEXP) {
+RcppExport SEXP _bsvarSIGNs_sample_Q(SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP BSEXP, SEXP h_invpSEXP, SEXP chol_SigmaSEXP, SEXP priorSEXP, SEXP sign_irfSEXP, SEXP sign_narrativeSEXP, SEXP sign_BSEXP, SEXP ZSEXP, SEXP NfSEXP, SEXP max_triesSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_bsvarSIGNs_sample_Q_try(pSEXP, YSEXP, XSEXP, BSEXP, h_invpSEXP, chol_SigmaSEXP, priorSEXP, sign_irfSEXP, sign_narrativeSEXP, sign_BSEXP, ZSEXP, max_triesSEXP));
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_sample_Q_try(pSEXP, YSEXP, XSEXP, BSEXP, h_invpSEXP, chol_SigmaSEXP, priorSEXP, sign_irfSEXP, sign_narrativeSEXP, sign_BSEXP, ZSEXP, NfSEXP, max_triesSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -793,68 +993,199 @@ RcppExport SEXP _bsvarSIGNs_sample_Q(SEXP pSEXP, SEXP YSEXP, SEXP XSEXP, SEXP BS
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// sample_restricted_B_cpp
+arma::field<arma::mat> sample_restricted_B_cpp(const arma::mat& post_B, const arma::mat& post_V, const arma::mat& Sigma, const int& p, const int& N, const int& Nf, const int& K);
+static SEXP _bsvarSIGNs_sample_restricted_B_cpp_try(SEXP post_BSEXP, SEXP post_VSEXP, SEXP SigmaSEXP, SEXP pSEXP, SEXP NSEXP, SEXP NfSEXP, SEXP KSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type post_B(post_BSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type post_V(post_VSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Sigma(SigmaSEXP);
+    Rcpp::traits::input_parameter< const int& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int& >::type N(NSEXP);
+    Rcpp::traits::input_parameter< const int& >::type Nf(NfSEXP);
+    Rcpp::traits::input_parameter< const int& >::type K(KSEXP);
+    rcpp_result_gen = Rcpp::wrap(sample_restricted_B_cpp(post_B, post_V, Sigma, p, N, Nf, K));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_sample_restricted_B_cpp(SEXP post_BSEXP, SEXP post_VSEXP, SEXP SigmaSEXP, SEXP pSEXP, SEXP NSEXP, SEXP NfSEXP, SEXP KSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_sample_restricted_B_cpp_try(post_BSEXP, post_VSEXP, SigmaSEXP, pSEXP, NSEXP, NfSEXP, KSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
 }
 // log_dgamma
 double log_dgamma(const double& x, const double& k, const double& theta);
-RcppExport SEXP _bsvarSIGNs_log_dgamma(SEXP xSEXP, SEXP kSEXP, SEXP thetaSEXP) {
+static SEXP _bsvarSIGNs_log_dgamma_try(SEXP xSEXP, SEXP kSEXP, SEXP thetaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const double& >::type k(kSEXP);
     Rcpp::traits::input_parameter< const double& >::type theta(thetaSEXP);
     rcpp_result_gen = Rcpp::wrap(log_dgamma(x, k, theta));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_log_dgamma(SEXP xSEXP, SEXP kSEXP, SEXP thetaSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_log_dgamma_try(xSEXP, kSEXP, thetaSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // log_dinvgamma
 double log_dinvgamma(const double& x, const double& alpha, const double& beta);
-RcppExport SEXP _bsvarSIGNs_log_dinvgamma(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP) {
+static SEXP _bsvarSIGNs_log_dinvgamma_try(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const double& >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const double& >::type beta(betaSEXP);
     rcpp_result_gen = Rcpp::wrap(log_dinvgamma(x, alpha, beta));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_log_dinvgamma(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_log_dinvgamma_try(xSEXP, alphaSEXP, betaSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // log_prior_hyper
 double log_prior_hyper(const arma::vec& hyper, const arma::vec& model, const Rcpp::List& prior);
-RcppExport SEXP _bsvarSIGNs_log_prior_hyper(SEXP hyperSEXP, SEXP modelSEXP, SEXP priorSEXP) {
+static SEXP _bsvarSIGNs_log_prior_hyper_try(SEXP hyperSEXP, SEXP modelSEXP, SEXP priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type hyper(hyperSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type model(modelSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List& >::type prior(priorSEXP);
     rcpp_result_gen = Rcpp::wrap(log_prior_hyper(hyper, model, prior));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_log_prior_hyper(SEXP hyperSEXP, SEXP modelSEXP, SEXP priorSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_log_prior_hyper_try(hyperSEXP, modelSEXP, priorSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // log_mvgamma
 double log_mvgamma(const int& n, const double& x);
-RcppExport SEXP _bsvarSIGNs_log_mvgamma(SEXP nSEXP, SEXP xSEXP) {
+static SEXP _bsvarSIGNs_log_mvgamma_try(SEXP nSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
     Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(log_mvgamma(n, x));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_log_mvgamma(SEXP nSEXP, SEXP xSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_log_mvgamma_try(nSEXP, xSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // log_ml
 double log_ml(const arma::mat& b, const arma::mat& Omega, const arma::mat& Psi, const int& d, const arma::mat& Y, const arma::mat& X);
-RcppExport SEXP _bsvarSIGNs_log_ml(SEXP bSEXP, SEXP OmegaSEXP, SEXP PsiSEXP, SEXP dSEXP, SEXP YSEXP, SEXP XSEXP) {
+static SEXP _bsvarSIGNs_log_ml_try(SEXP bSEXP, SEXP OmegaSEXP, SEXP PsiSEXP, SEXP dSEXP, SEXP YSEXP, SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type b(bSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Omega(OmegaSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Psi(PsiSEXP);
@@ -863,14 +1194,37 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
     rcpp_result_gen = Rcpp::wrap(log_ml(b, Omega, Psi, d, Y, X));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_log_ml(SEXP bSEXP, SEXP OmegaSEXP, SEXP PsiSEXP, SEXP dSEXP, SEXP YSEXP, SEXP XSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_log_ml_try(bSEXP, OmegaSEXP, PsiSEXP, dSEXP, YSEXP, XSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // log_ml_dummy
 double log_ml_dummy(const arma::vec& hyper, const arma::vec& model, const arma::mat& Y, const arma::mat& X, const Rcpp::List& prior);
-RcppExport SEXP _bsvarSIGNs_log_ml_dummy(SEXP hyperSEXP, SEXP modelSEXP, SEXP YSEXP, SEXP XSEXP, SEXP priorSEXP) {
+static SEXP _bsvarSIGNs_log_ml_dummy_try(SEXP hyperSEXP, SEXP modelSEXP, SEXP YSEXP, SEXP XSEXP, SEXP priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type hyper(hyperSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type model(modelSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
@@ -878,14 +1232,37 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::List& >::type prior(priorSEXP);
     rcpp_result_gen = Rcpp::wrap(log_ml_dummy(hyper, model, Y, X, prior));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_log_ml_dummy(SEXP hyperSEXP, SEXP modelSEXP, SEXP YSEXP, SEXP XSEXP, SEXP priorSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_log_ml_dummy_try(hyperSEXP, modelSEXP, YSEXP, XSEXP, priorSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // log_posterior_hyper
 double log_posterior_hyper(const arma::vec& hyper, const arma::vec& model, const arma::mat& Y, const arma::mat& X, const Rcpp::List& prior);
-RcppExport SEXP _bsvarSIGNs_log_posterior_hyper(SEXP hyperSEXP, SEXP modelSEXP, SEXP YSEXP, SEXP XSEXP, SEXP priorSEXP) {
+static SEXP _bsvarSIGNs_log_posterior_hyper_try(SEXP hyperSEXP, SEXP modelSEXP, SEXP YSEXP, SEXP XSEXP, SEXP priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type hyper(hyperSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type model(modelSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
@@ -893,39 +1270,108 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::List& >::type prior(priorSEXP);
     rcpp_result_gen = Rcpp::wrap(log_posterior_hyper(hyper, model, Y, X, prior));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_log_posterior_hyper(SEXP hyperSEXP, SEXP modelSEXP, SEXP YSEXP, SEXP XSEXP, SEXP priorSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_log_posterior_hyper_try(hyperSEXP, modelSEXP, YSEXP, XSEXP, priorSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // extend_hyper
 arma::mat extend_hyper(const arma::vec& init, const arma::vec& model, const arma::mat& hypers);
-RcppExport SEXP _bsvarSIGNs_extend_hyper(SEXP initSEXP, SEXP modelSEXP, SEXP hypersSEXP) {
+static SEXP _bsvarSIGNs_extend_hyper_try(SEXP initSEXP, SEXP modelSEXP, SEXP hypersSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type init(initSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type model(modelSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type hypers(hypersSEXP);
     rcpp_result_gen = Rcpp::wrap(extend_hyper(init, model, hypers));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_extend_hyper(SEXP initSEXP, SEXP modelSEXP, SEXP hypersSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_extend_hyper_try(initSEXP, modelSEXP, hypersSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // narrow_hyper
 arma::mat narrow_hyper(const arma::vec& model, arma::mat hypers);
-RcppExport SEXP _bsvarSIGNs_narrow_hyper(SEXP modelSEXP, SEXP hypersSEXP) {
+static SEXP _bsvarSIGNs_narrow_hyper_try(SEXP modelSEXP, SEXP hypersSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type model(modelSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type hypers(hypersSEXP);
     rcpp_result_gen = Rcpp::wrap(narrow_hyper(model, hypers));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_narrow_hyper(SEXP modelSEXP, SEXP hypersSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_narrow_hyper_try(modelSEXP, hypersSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // sample_hyper
 arma::mat sample_hyper(const int& S, const int& start, const arma::vec& init, const arma::vec& model, const arma::mat& Y, const arma::mat& X, const arma::mat& W, const Rcpp::List& prior);
-RcppExport SEXP _bsvarSIGNs_sample_hyper(SEXP SSEXP, SEXP startSEXP, SEXP initSEXP, SEXP modelSEXP, SEXP YSEXP, SEXP XSEXP, SEXP WSEXP, SEXP priorSEXP) {
+static SEXP _bsvarSIGNs_sample_hyper_try(SEXP SSEXP, SEXP startSEXP, SEXP initSEXP, SEXP modelSEXP, SEXP YSEXP, SEXP XSEXP, SEXP WSEXP, SEXP priorSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int& >::type S(SSEXP);
     Rcpp::traits::input_parameter< const int& >::type start(startSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type init(initSEXP);
@@ -936,7 +1382,31 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::List& >::type prior(priorSEXP);
     rcpp_result_gen = Rcpp::wrap(sample_hyper(S, start, init, model, Y, X, W, prior));
     return rcpp_result_gen;
-END_RCPP
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _bsvarSIGNs_sample_hyper(SEXP SSEXP, SEXP startSEXP, SEXP initSEXP, SEXP modelSEXP, SEXP YSEXP, SEXP XSEXP, SEXP WSEXP, SEXP priorSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_bsvarSIGNs_sample_hyper_try(SSEXP, startSEXP, initSEXP, modelSEXP, YSEXP, XSEXP, WSEXP, priorSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
 }
 // qr_sign_cpp
 arma::mat qr_sign_cpp(const arma::mat& A);
@@ -967,7 +1437,7 @@ RcppExport SEXP _bsvarSIGNs_qr_sign_cpp(SEXP ASEXP) {
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -1001,7 +1471,7 @@ RcppExport SEXP _bsvarSIGNs_rortho_cpp(SEXP NSEXP) {
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -1036,7 +1506,7 @@ RcppExport SEXP _bsvarSIGNs_match_sign(SEXP ASEXP, SEXP signSEXP) {
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -1046,7 +1516,9 @@ RcppExport SEXP _bsvarSIGNs_match_sign(SEXP ASEXP, SEXP signSEXP) {
 static int _bsvarSIGNs_RcppExport_validate(const char* sig) { 
     static std::set<std::string> signatures;
     if (signatures.empty()) {
-        signatures.insert("Rcpp::List(*bsvar_sign_cpp)(const int&,const int&,const arma::mat&,const arma::mat&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const Rcpp::List&,const bool,const int,const int&)");
+        signatures.insert("arma::field<arma::mat>(*bsvar_sign_single_draw_cpp)(const int&,const arma::mat&,const arma::mat&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&,const Rcpp::List&,const int&,const int)");
+        signatures.insert("Rcpp::List(*bsvar_sign_par_cpp)(const int&,const arma::mat&,const arma::mat&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&,const Rcpp::List&,const int&,const int)");
+        signatures.insert("Rcpp::List(*bsvar_sign_cpp)(const int&,const int&,const arma::mat&,const arma::mat&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&,const Rcpp::List&,const bool,const int,const int&)");
         signatures.insert("arma::cube(*bsvarSIGNs_structural_shocks)(arma::cube&,arma::cube&,arma::mat&,arma::mat&)");
         signatures.insert("arma::cube(*bsvarSIGNs_fitted_values)(arma::cube&,arma::cube&,arma::cube&,arma::mat&)");
         signatures.insert("arma::cube(*ir1_cpp)(const arma::mat&,const arma::mat&,int,const int&)");
@@ -1054,18 +1526,33 @@ static int _bsvarSIGNs_RcppExport_validate(const char* sig) {
         signatures.insert("arma::field<arma::cube>(*bsvarSIGNs_hd)(arma::field<arma::cube>&,arma::cube&,const bool)");
         signatures.insert("arma::mat(*hd1_cpp)(const int&,const int&,const int&,const arma::mat&,const arma::cube&)");
         signatures.insert("arma::field<arma::cube>(*bsvarSIGNs_fevd)(arma::field<arma::cube>&)");
-        signatures.insert("arma::cube(*forecast_bsvarSIGNs)(arma::cube&,arma::cube&,arma::vec&,arma::mat&,arma::mat&,const int&)");
+        signatures.insert("Rcpp::List(*forecast_bsvarSIGNs)(arma::cube&,arma::cube&,arma::mat&,arma::vec&,arma::mat&,arma::mat&,const int&,const int&,const int&)");
+        signatures.insert("arma::mat(*metropolis)(const int,const int,arma::vec,arma::mat,Rcpp::Function)");
         signatures.insert("bool(*match_sign_narrative)(const arma::mat&,const arma::mat&,const arma::cube&)");
-        signatures.insert("double(*weight_narrative)(const int&,arma::mat,const arma::cube&)");
+        signatures.insert("double(*log_weight_narrative)(const int&,arma::mat,const arma::cube&)");
         signatures.insert("arma::field<arma::mat>(*ZIRF)(const arma::field<arma::mat>&,const arma::mat&)");
         signatures.insert("arma::colvec(*zero_restrictions)(const arma::field<arma::mat>&,const arma::colvec)");
         signatures.insert("arma::colvec(*g_fh)(const arma::field<arma::mat>&,const arma::mat&,const arma::mat&)");
         signatures.insert("arma::colvec(*g_fh_vec)(const arma::field<arma::mat>&,const arma::colvec)");
         signatures.insert("double(*log_volume_element)(const arma::field<arma::mat>&,const arma::mat&,const arma::mat&)");
-        signatures.insert("double(*weight_zero)(const arma::field<arma::mat>&,const arma::mat&,const arma::mat&,const arma::mat&)");
+        signatures.insert("double(*log_weight_zero)(const arma::field<arma::mat>&,const arma::mat&,const arma::mat&,const arma::mat&)");
         signatures.insert("arma::mat(*rzeroQ)(const arma::field<arma::mat>&,const arma::mat&)");
+        signatures.insert("arma::mat(*rmatnorm_cpp)(const arma::mat&,const arma::mat&,const arma::mat&)");
+        signatures.insert("arma::mat(*riwish_cpp)(const arma::mat&,const double&)");
+        signatures.insert("arma::field<arma::mat>(*niw_cpp)(const arma::mat&,const arma::mat&,const arma::mat&,const arma::mat&,const arma::mat&,const int&)");
         signatures.insert("bool(*match_sign_irf)(const arma::mat&,const arma::cube&,const arma::cube&)");
-        signatures.insert("arma::field<arma::mat>(*sample_Q)(const int&,const arma::mat&,const arma::mat&,arma::mat&,arma::mat&,arma::mat&,const Rcpp::List&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&)");
+        signatures.insert("arma::field<arma::mat>(*sample_Q)(const int&,const arma::mat&,const arma::mat&,arma::mat&,arma::mat&,arma::mat&,const Rcpp::List&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&,const int&)");
+        signatures.insert("arma::field<arma::mat>(*sample_restricted_B_cpp)(const arma::mat&,const arma::mat&,const arma::mat&,const int&,const int&,const int&,const int&)");
+        signatures.insert("double(*log_dgamma)(const double&,const double&,const double&)");
+        signatures.insert("double(*log_dinvgamma)(const double&,const double&,const double&)");
+        signatures.insert("double(*log_prior_hyper)(const arma::vec&,const arma::vec&,const Rcpp::List&)");
+        signatures.insert("double(*log_mvgamma)(const int&,const double&)");
+        signatures.insert("double(*log_ml)(const arma::mat&,const arma::mat&,const arma::mat&,const int&,const arma::mat&,const arma::mat&)");
+        signatures.insert("double(*log_ml_dummy)(const arma::vec&,const arma::vec&,const arma::mat&,const arma::mat&,const Rcpp::List&)");
+        signatures.insert("double(*log_posterior_hyper)(const arma::vec&,const arma::vec&,const arma::mat&,const arma::mat&,const Rcpp::List&)");
+        signatures.insert("arma::mat(*extend_hyper)(const arma::vec&,const arma::vec&,const arma::mat&)");
+        signatures.insert("arma::mat(*narrow_hyper)(const arma::vec&,arma::mat)");
+        signatures.insert("arma::mat(*sample_hyper)(const int&,const int&,const arma::vec&,const arma::vec&,const arma::mat&,const arma::mat&,const arma::mat&,const Rcpp::List&)");
         signatures.insert("arma::mat(*qr_sign_cpp)(const arma::mat&)");
         signatures.insert("arma::mat(*rortho_cpp)(const int&)");
         signatures.insert("bool(*match_sign)(const arma::mat&,const arma::mat&)");
@@ -1075,6 +1562,8 @@ static int _bsvarSIGNs_RcppExport_validate(const char* sig) {
 
 // registerCCallable (register entry points for exported C++ functions)
 RcppExport SEXP _bsvarSIGNs_RcppExport_registerCCallable() { 
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_bsvar_sign_single_draw_cpp", (DL_FUNC)_bsvarSIGNs_bsvar_sign_single_draw_cpp_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_bsvar_sign_par_cpp", (DL_FUNC)_bsvarSIGNs_bsvar_sign_par_cpp_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_bsvar_sign_cpp", (DL_FUNC)_bsvarSIGNs_bsvar_sign_cpp_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_bsvarSIGNs_structural_shocks", (DL_FUNC)_bsvarSIGNs_bsvarSIGNs_structural_shocks_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_bsvarSIGNs_fitted_values", (DL_FUNC)_bsvarSIGNs_bsvarSIGNs_fitted_values_try);
@@ -1084,17 +1573,32 @@ RcppExport SEXP _bsvarSIGNs_RcppExport_registerCCallable() {
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_hd1_cpp", (DL_FUNC)_bsvarSIGNs_hd1_cpp_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_bsvarSIGNs_fevd", (DL_FUNC)_bsvarSIGNs_bsvarSIGNs_fevd_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_forecast_bsvarSIGNs", (DL_FUNC)_bsvarSIGNs_forecast_bsvarSIGNs_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_metropolis", (DL_FUNC)_bsvarSIGNs_metropolis_R_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_match_sign_narrative", (DL_FUNC)_bsvarSIGNs_match_sign_narrative_try);
-    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_weight_narrative", (DL_FUNC)_bsvarSIGNs_weight_narrative_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_weight_narrative", (DL_FUNC)_bsvarSIGNs_log_weight_narrative_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_ZIRF", (DL_FUNC)_bsvarSIGNs_ZIRF_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_zero_restrictions", (DL_FUNC)_bsvarSIGNs_zero_restrictions_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_g_fh", (DL_FUNC)_bsvarSIGNs_g_fh_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_g_fh_vec", (DL_FUNC)_bsvarSIGNs_g_fh_vec_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_volume_element", (DL_FUNC)_bsvarSIGNs_log_volume_element_try);
-    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_weight_zero", (DL_FUNC)_bsvarSIGNs_weight_zero_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_weight_zero", (DL_FUNC)_bsvarSIGNs_log_weight_zero_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_rzeroQ", (DL_FUNC)_bsvarSIGNs_rzeroQ_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_rmatnorm_cpp", (DL_FUNC)_bsvarSIGNs_rmatnorm_cpp_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_riwish_cpp", (DL_FUNC)_bsvarSIGNs_riwish_cpp_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_niw_cpp", (DL_FUNC)_bsvarSIGNs_niw_cpp_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_match_sign_irf", (DL_FUNC)_bsvarSIGNs_match_sign_irf_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_sample_Q", (DL_FUNC)_bsvarSIGNs_sample_Q_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_sample_restricted_B_cpp", (DL_FUNC)_bsvarSIGNs_sample_restricted_B_cpp_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_dgamma", (DL_FUNC)_bsvarSIGNs_log_dgamma_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_dinvgamma", (DL_FUNC)_bsvarSIGNs_log_dinvgamma_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_prior_hyper", (DL_FUNC)_bsvarSIGNs_log_prior_hyper_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_mvgamma", (DL_FUNC)_bsvarSIGNs_log_mvgamma_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_ml", (DL_FUNC)_bsvarSIGNs_log_ml_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_ml_dummy", (DL_FUNC)_bsvarSIGNs_log_ml_dummy_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_log_posterior_hyper", (DL_FUNC)_bsvarSIGNs_log_posterior_hyper_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_extend_hyper", (DL_FUNC)_bsvarSIGNs_extend_hyper_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_narrow_hyper", (DL_FUNC)_bsvarSIGNs_narrow_hyper_try);
+    R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_sample_hyper", (DL_FUNC)_bsvarSIGNs_sample_hyper_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_qr_sign_cpp", (DL_FUNC)_bsvarSIGNs_qr_sign_cpp_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_rortho_cpp", (DL_FUNC)_bsvarSIGNs_rortho_cpp_try);
     R_RegisterCCallable("bsvarSIGNs", "_bsvarSIGNs_match_sign", (DL_FUNC)_bsvarSIGNs_match_sign_try);
@@ -1103,7 +1607,9 @@ RcppExport SEXP _bsvarSIGNs_RcppExport_registerCCallable() {
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_bsvarSIGNs_bsvar_sign_cpp", (DL_FUNC) &_bsvarSIGNs_bsvar_sign_cpp, 12},
+    {"_bsvarSIGNs_bsvar_sign_single_draw_cpp", (DL_FUNC) &_bsvarSIGNs_bsvar_sign_single_draw_cpp, 11},
+    {"_bsvarSIGNs_bsvar_sign_par_cpp", (DL_FUNC) &_bsvarSIGNs_bsvar_sign_par_cpp, 11},
+    {"_bsvarSIGNs_bsvar_sign_cpp", (DL_FUNC) &_bsvarSIGNs_bsvar_sign_cpp, 13},
     {"_bsvarSIGNs_bsvarSIGNs_structural_shocks", (DL_FUNC) &_bsvarSIGNs_bsvarSIGNs_structural_shocks, 4},
     {"_bsvarSIGNs_bsvarSIGNs_fitted_values", (DL_FUNC) &_bsvarSIGNs_bsvarSIGNs_fitted_values, 4},
     {"_bsvarSIGNs_ir1_cpp", (DL_FUNC) &_bsvarSIGNs_ir1_cpp, 4},
@@ -1111,21 +1617,23 @@ static const R_CallMethodDef CallEntries[] = {
     {"_bsvarSIGNs_bsvarSIGNs_hd", (DL_FUNC) &_bsvarSIGNs_bsvarSIGNs_hd, 3},
     {"_bsvarSIGNs_hd1_cpp", (DL_FUNC) &_bsvarSIGNs_hd1_cpp, 5},
     {"_bsvarSIGNs_bsvarSIGNs_fevd", (DL_FUNC) &_bsvarSIGNs_bsvarSIGNs_fevd, 1},
-    {"_bsvarSIGNs_forecast_bsvarSIGNs", (DL_FUNC) &_bsvarSIGNs_forecast_bsvarSIGNs, 6},
+    {"_bsvarSIGNs_forecast_bsvarSIGNs", (DL_FUNC) &_bsvarSIGNs_forecast_bsvarSIGNs, 9},
+    {"_bsvarSIGNs_metropolis_R", (DL_FUNC) &_bsvarSIGNs_metropolis_R, 5},
     {"_bsvarSIGNs_match_sign_narrative", (DL_FUNC) &_bsvarSIGNs_match_sign_narrative, 3},
-    {"_bsvarSIGNs_weight_narrative", (DL_FUNC) &_bsvarSIGNs_weight_narrative, 3},
+    {"_bsvarSIGNs_log_weight_narrative", (DL_FUNC) &_bsvarSIGNs_log_weight_narrative, 3},
     {"_bsvarSIGNs_ZIRF", (DL_FUNC) &_bsvarSIGNs_ZIRF, 2},
     {"_bsvarSIGNs_zero_restrictions", (DL_FUNC) &_bsvarSIGNs_zero_restrictions, 2},
     {"_bsvarSIGNs_g_fh", (DL_FUNC) &_bsvarSIGNs_g_fh, 3},
     {"_bsvarSIGNs_g_fh_vec", (DL_FUNC) &_bsvarSIGNs_g_fh_vec, 2},
     {"_bsvarSIGNs_log_volume_element", (DL_FUNC) &_bsvarSIGNs_log_volume_element, 3},
-    {"_bsvarSIGNs_weight_zero", (DL_FUNC) &_bsvarSIGNs_weight_zero, 4},
+    {"_bsvarSIGNs_log_weight_zero", (DL_FUNC) &_bsvarSIGNs_log_weight_zero, 4},
     {"_bsvarSIGNs_rzeroQ", (DL_FUNC) &_bsvarSIGNs_rzeroQ, 2},
     {"_bsvarSIGNs_rmatnorm_cpp", (DL_FUNC) &_bsvarSIGNs_rmatnorm_cpp, 3},
     {"_bsvarSIGNs_riwish_cpp", (DL_FUNC) &_bsvarSIGNs_riwish_cpp, 2},
     {"_bsvarSIGNs_niw_cpp", (DL_FUNC) &_bsvarSIGNs_niw_cpp, 6},
     {"_bsvarSIGNs_match_sign_irf", (DL_FUNC) &_bsvarSIGNs_match_sign_irf, 3},
-    {"_bsvarSIGNs_sample_Q", (DL_FUNC) &_bsvarSIGNs_sample_Q, 12},
+    {"_bsvarSIGNs_sample_Q", (DL_FUNC) &_bsvarSIGNs_sample_Q, 13},
+    {"_bsvarSIGNs_sample_restricted_B_cpp", (DL_FUNC) &_bsvarSIGNs_sample_restricted_B_cpp, 7},
     {"_bsvarSIGNs_log_dgamma", (DL_FUNC) &_bsvarSIGNs_log_dgamma, 3},
     {"_bsvarSIGNs_log_dinvgamma", (DL_FUNC) &_bsvarSIGNs_log_dinvgamma, 3},
     {"_bsvarSIGNs_log_prior_hyper", (DL_FUNC) &_bsvarSIGNs_log_prior_hyper, 3},

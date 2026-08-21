@@ -25,17 +25,59 @@ namespace bsvarSIGNs {
         }
     }
 
-    inline Rcpp::List bsvar_sign_cpp(const int& S, const int& p, const arma::mat& Y, const arma::mat& X, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const Rcpp::List& prior, const bool show_progress = true, const int thin = 100, const int& max_tries = 10000) {
-        typedef SEXP(*Ptr_bsvar_sign_cpp)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+    inline arma::field<arma::mat> bsvar_sign_single_draw_cpp(const int& p, const arma::mat& Y, const arma::mat& X, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& Nf, const Rcpp::List& prior, const int& max_tries, const int idx) {
+        typedef SEXP(*Ptr_bsvar_sign_single_draw_cpp)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_bsvar_sign_single_draw_cpp p_bsvar_sign_single_draw_cpp = NULL;
+        if (p_bsvar_sign_single_draw_cpp == NULL) {
+            validateSignature("arma::field<arma::mat>(*bsvar_sign_single_draw_cpp)(const int&,const arma::mat&,const arma::mat&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&,const Rcpp::List&,const int&,const int)");
+            p_bsvar_sign_single_draw_cpp = (Ptr_bsvar_sign_single_draw_cpp)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_bsvar_sign_single_draw_cpp");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_bsvar_sign_single_draw_cpp(Shield<SEXP>(Rcpp::wrap(p)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(sign_irf)), Shield<SEXP>(Rcpp::wrap(sign_narrative)), Shield<SEXP>(Rcpp::wrap(sign_B)), Shield<SEXP>(Rcpp::wrap(Z)), Shield<SEXP>(Rcpp::wrap(Nf)), Shield<SEXP>(Rcpp::wrap(prior)), Shield<SEXP>(Rcpp::wrap(max_tries)), Shield<SEXP>(Rcpp::wrap(idx)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<arma::field<arma::mat> >(rcpp_result_gen);
+    }
+
+    inline Rcpp::List bsvar_sign_par_cpp(const int& p, const arma::mat& Y, const arma::mat& X, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& Nf, const Rcpp::List& prior, const int& max_tries = 10000, const int idx = 0) {
+        typedef SEXP(*Ptr_bsvar_sign_par_cpp)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_bsvar_sign_par_cpp p_bsvar_sign_par_cpp = NULL;
+        if (p_bsvar_sign_par_cpp == NULL) {
+            validateSignature("Rcpp::List(*bsvar_sign_par_cpp)(const int&,const arma::mat&,const arma::mat&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&,const Rcpp::List&,const int&,const int)");
+            p_bsvar_sign_par_cpp = (Ptr_bsvar_sign_par_cpp)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_bsvar_sign_par_cpp");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_bsvar_sign_par_cpp(Shield<SEXP>(Rcpp::wrap(p)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(sign_irf)), Shield<SEXP>(Rcpp::wrap(sign_narrative)), Shield<SEXP>(Rcpp::wrap(sign_B)), Shield<SEXP>(Rcpp::wrap(Z)), Shield<SEXP>(Rcpp::wrap(Nf)), Shield<SEXP>(Rcpp::wrap(prior)), Shield<SEXP>(Rcpp::wrap(max_tries)), Shield<SEXP>(Rcpp::wrap(idx)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<Rcpp::List >(rcpp_result_gen);
+    }
+
+    inline Rcpp::List bsvar_sign_cpp(const int& S, const int& p, const arma::mat& Y, const arma::mat& X, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& Nf, const Rcpp::List& prior, const bool show_progress = true, const int thin = 100, const int& max_tries = 10000) {
+        typedef SEXP(*Ptr_bsvar_sign_cpp)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_bsvar_sign_cpp p_bsvar_sign_cpp = NULL;
         if (p_bsvar_sign_cpp == NULL) {
-            validateSignature("Rcpp::List(*bsvar_sign_cpp)(const int&,const int&,const arma::mat&,const arma::mat&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const Rcpp::List&,const bool,const int,const int&)");
+            validateSignature("Rcpp::List(*bsvar_sign_cpp)(const int&,const int&,const arma::mat&,const arma::mat&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&,const Rcpp::List&,const bool,const int,const int&)");
             p_bsvar_sign_cpp = (Ptr_bsvar_sign_cpp)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_bsvar_sign_cpp");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_bsvar_sign_cpp(Shield<SEXP>(Rcpp::wrap(S)), Shield<SEXP>(Rcpp::wrap(p)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(sign_irf)), Shield<SEXP>(Rcpp::wrap(sign_narrative)), Shield<SEXP>(Rcpp::wrap(sign_B)), Shield<SEXP>(Rcpp::wrap(Z)), Shield<SEXP>(Rcpp::wrap(prior)), Shield<SEXP>(Rcpp::wrap(show_progress)), Shield<SEXP>(Rcpp::wrap(thin)), Shield<SEXP>(Rcpp::wrap(max_tries)));
+            rcpp_result_gen = p_bsvar_sign_cpp(Shield<SEXP>(Rcpp::wrap(S)), Shield<SEXP>(Rcpp::wrap(p)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(sign_irf)), Shield<SEXP>(Rcpp::wrap(sign_narrative)), Shield<SEXP>(Rcpp::wrap(sign_B)), Shield<SEXP>(Rcpp::wrap(Z)), Shield<SEXP>(Rcpp::wrap(Nf)), Shield<SEXP>(Rcpp::wrap(prior)), Shield<SEXP>(Rcpp::wrap(show_progress)), Shield<SEXP>(Rcpp::wrap(thin)), Shield<SEXP>(Rcpp::wrap(max_tries)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -193,17 +235,17 @@ namespace bsvarSIGNs {
         return Rcpp::as<arma::field<arma::cube> >(rcpp_result_gen);
     }
 
-    inline arma::cube forecast_bsvarSIGNs(arma::cube& posterior_Sigma, arma::cube& posterior_A, arma::vec& X_T, arma::mat& exogenous_forecast, arma::mat& cond_forecast, const int& horizon) {
-        typedef SEXP(*Ptr_forecast_bsvarSIGNs)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+    inline Rcpp::List forecast_bsvarSIGNs(arma::cube& posterior_Sigma, arma::cube& posterior_A, arma::mat& posterior_hyper, arma::vec& X_T, arma::mat& exogenous_forecast, arma::mat& cond_forecast, const int& covid, const int& T, const int& horizon) {
+        typedef SEXP(*Ptr_forecast_bsvarSIGNs)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_forecast_bsvarSIGNs p_forecast_bsvarSIGNs = NULL;
         if (p_forecast_bsvarSIGNs == NULL) {
-            validateSignature("arma::cube(*forecast_bsvarSIGNs)(arma::cube&,arma::cube&,arma::vec&,arma::mat&,arma::mat&,const int&)");
+            validateSignature("Rcpp::List(*forecast_bsvarSIGNs)(arma::cube&,arma::cube&,arma::mat&,arma::vec&,arma::mat&,arma::mat&,const int&,const int&,const int&)");
             p_forecast_bsvarSIGNs = (Ptr_forecast_bsvarSIGNs)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_forecast_bsvarSIGNs");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_forecast_bsvarSIGNs(Shield<SEXP>(Rcpp::wrap(posterior_Sigma)), Shield<SEXP>(Rcpp::wrap(posterior_A)), Shield<SEXP>(Rcpp::wrap(X_T)), Shield<SEXP>(Rcpp::wrap(exogenous_forecast)), Shield<SEXP>(Rcpp::wrap(cond_forecast)), Shield<SEXP>(Rcpp::wrap(horizon)));
+            rcpp_result_gen = p_forecast_bsvarSIGNs(Shield<SEXP>(Rcpp::wrap(posterior_Sigma)), Shield<SEXP>(Rcpp::wrap(posterior_A)), Shield<SEXP>(Rcpp::wrap(posterior_hyper)), Shield<SEXP>(Rcpp::wrap(X_T)), Shield<SEXP>(Rcpp::wrap(exogenous_forecast)), Shield<SEXP>(Rcpp::wrap(cond_forecast)), Shield<SEXP>(Rcpp::wrap(covid)), Shield<SEXP>(Rcpp::wrap(T)), Shield<SEXP>(Rcpp::wrap(horizon)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -211,7 +253,28 @@ namespace bsvarSIGNs {
             throw Rcpp::LongjumpException(rcpp_result_gen);
         if (rcpp_result_gen.inherits("try-error"))
             throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<arma::cube >(rcpp_result_gen);
+        return Rcpp::as<Rcpp::List >(rcpp_result_gen);
+    }
+
+    inline arma::mat metropolis(const int T, const int t0, arma::vec x, arma::mat Sigma, Rcpp::Function log_target) {
+        typedef SEXP(*Ptr_metropolis)(SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_metropolis p_metropolis = NULL;
+        if (p_metropolis == NULL) {
+            validateSignature("arma::mat(*metropolis)(const int,const int,arma::vec,arma::mat,Rcpp::Function)");
+            p_metropolis = (Ptr_metropolis)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_metropolis");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_metropolis(Shield<SEXP>(Rcpp::wrap(T)), Shield<SEXP>(Rcpp::wrap(t0)), Shield<SEXP>(Rcpp::wrap(x)), Shield<SEXP>(Rcpp::wrap(Sigma)), Shield<SEXP>(Rcpp::wrap(log_target)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<arma::mat >(rcpp_result_gen);
     }
 
     inline bool match_sign_narrative(const arma::mat& Epsilon, const arma::mat& sign_narrative, const arma::cube& irf) {
@@ -235,17 +298,17 @@ namespace bsvarSIGNs {
         return Rcpp::as<bool >(rcpp_result_gen);
     }
 
-    inline double weight_narrative(const int& T, arma::mat sign_narrative, const arma::cube& irf) {
-        typedef SEXP(*Ptr_weight_narrative)(SEXP,SEXP,SEXP);
-        static Ptr_weight_narrative p_weight_narrative = NULL;
-        if (p_weight_narrative == NULL) {
-            validateSignature("double(*weight_narrative)(const int&,arma::mat,const arma::cube&)");
-            p_weight_narrative = (Ptr_weight_narrative)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_weight_narrative");
+    inline double log_weight_narrative(const int& T, arma::mat sign_narrative, const arma::cube& irf) {
+        typedef SEXP(*Ptr_log_weight_narrative)(SEXP,SEXP,SEXP);
+        static Ptr_log_weight_narrative p_log_weight_narrative = NULL;
+        if (p_log_weight_narrative == NULL) {
+            validateSignature("double(*log_weight_narrative)(const int&,arma::mat,const arma::cube&)");
+            p_log_weight_narrative = (Ptr_log_weight_narrative)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_log_weight_narrative");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_weight_narrative(Shield<SEXP>(Rcpp::wrap(T)), Shield<SEXP>(Rcpp::wrap(sign_narrative)), Shield<SEXP>(Rcpp::wrap(irf)));
+            rcpp_result_gen = p_log_weight_narrative(Shield<SEXP>(Rcpp::wrap(T)), Shield<SEXP>(Rcpp::wrap(sign_narrative)), Shield<SEXP>(Rcpp::wrap(irf)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -361,17 +424,17 @@ namespace bsvarSIGNs {
         return Rcpp::as<double >(rcpp_result_gen);
     }
 
-    inline double weight_zero(const arma::field<arma::mat>& Z, const arma::mat& B, const arma::mat& h_inv, const arma::mat& Q) {
-        typedef SEXP(*Ptr_weight_zero)(SEXP,SEXP,SEXP,SEXP);
-        static Ptr_weight_zero p_weight_zero = NULL;
-        if (p_weight_zero == NULL) {
-            validateSignature("double(*weight_zero)(const arma::field<arma::mat>&,const arma::mat&,const arma::mat&,const arma::mat&)");
-            p_weight_zero = (Ptr_weight_zero)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_weight_zero");
+    inline double log_weight_zero(const arma::field<arma::mat>& Z, const arma::mat& B, const arma::mat& h_inv, const arma::mat& Q) {
+        typedef SEXP(*Ptr_log_weight_zero)(SEXP,SEXP,SEXP,SEXP);
+        static Ptr_log_weight_zero p_log_weight_zero = NULL;
+        if (p_log_weight_zero == NULL) {
+            validateSignature("double(*log_weight_zero)(const arma::field<arma::mat>&,const arma::mat&,const arma::mat&,const arma::mat&)");
+            p_log_weight_zero = (Ptr_log_weight_zero)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_log_weight_zero");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_weight_zero(Shield<SEXP>(Rcpp::wrap(Z)), Shield<SEXP>(Rcpp::wrap(B)), Shield<SEXP>(Rcpp::wrap(h_inv)), Shield<SEXP>(Rcpp::wrap(Q)));
+            rcpp_result_gen = p_log_weight_zero(Shield<SEXP>(Rcpp::wrap(Z)), Shield<SEXP>(Rcpp::wrap(B)), Shield<SEXP>(Rcpp::wrap(h_inv)), Shield<SEXP>(Rcpp::wrap(Q)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -403,6 +466,69 @@ namespace bsvarSIGNs {
         return Rcpp::as<arma::mat >(rcpp_result_gen);
     }
 
+    inline arma::mat rmatnorm_cpp(const arma::mat& M, const arma::mat& U, const arma::mat& V) {
+        typedef SEXP(*Ptr_rmatnorm_cpp)(SEXP,SEXP,SEXP);
+        static Ptr_rmatnorm_cpp p_rmatnorm_cpp = NULL;
+        if (p_rmatnorm_cpp == NULL) {
+            validateSignature("arma::mat(*rmatnorm_cpp)(const arma::mat&,const arma::mat&,const arma::mat&)");
+            p_rmatnorm_cpp = (Ptr_rmatnorm_cpp)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_rmatnorm_cpp");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_rmatnorm_cpp(Shield<SEXP>(Rcpp::wrap(M)), Shield<SEXP>(Rcpp::wrap(U)), Shield<SEXP>(Rcpp::wrap(V)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<arma::mat >(rcpp_result_gen);
+    }
+
+    inline arma::mat riwish_cpp(const arma::mat& S, const double& nu) {
+        typedef SEXP(*Ptr_riwish_cpp)(SEXP,SEXP);
+        static Ptr_riwish_cpp p_riwish_cpp = NULL;
+        if (p_riwish_cpp == NULL) {
+            validateSignature("arma::mat(*riwish_cpp)(const arma::mat&,const double&)");
+            p_riwish_cpp = (Ptr_riwish_cpp)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_riwish_cpp");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_riwish_cpp(Shield<SEXP>(Rcpp::wrap(S)), Shield<SEXP>(Rcpp::wrap(nu)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<arma::mat >(rcpp_result_gen);
+    }
+
+    inline arma::field<arma::mat> niw_cpp(const arma::mat& Y, const arma::mat& X, const arma::mat& prior_B, const arma::mat& prior_V, const arma::mat& prior_S, const int& prior_nu) {
+        typedef SEXP(*Ptr_niw_cpp)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_niw_cpp p_niw_cpp = NULL;
+        if (p_niw_cpp == NULL) {
+            validateSignature("arma::field<arma::mat>(*niw_cpp)(const arma::mat&,const arma::mat&,const arma::mat&,const arma::mat&,const arma::mat&,const int&)");
+            p_niw_cpp = (Ptr_niw_cpp)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_niw_cpp");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_niw_cpp(Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(prior_B)), Shield<SEXP>(Rcpp::wrap(prior_V)), Shield<SEXP>(Rcpp::wrap(prior_S)), Shield<SEXP>(Rcpp::wrap(prior_nu)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<arma::field<arma::mat> >(rcpp_result_gen);
+    }
+
     inline bool match_sign_irf(const arma::mat& Q, const arma::cube& sign_irf, const arma::cube& irf) {
         typedef SEXP(*Ptr_match_sign_irf)(SEXP,SEXP,SEXP);
         static Ptr_match_sign_irf p_match_sign_irf = NULL;
@@ -424,17 +550,17 @@ namespace bsvarSIGNs {
         return Rcpp::as<bool >(rcpp_result_gen);
     }
 
-    inline arma::field<arma::mat> sample_Q(const int& p, const arma::mat& Y, const arma::mat& X, arma::mat& B, arma::mat& h_invp, arma::mat& chol_Sigma, const Rcpp::List& prior, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& max_tries) {
-        typedef SEXP(*Ptr_sample_Q)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+    inline arma::field<arma::mat> sample_Q(const int& p, const arma::mat& Y, const arma::mat& X, arma::mat& B, arma::mat& h_invp, arma::mat& chol_Sigma, const Rcpp::List& prior, const arma::cube& sign_irf, const arma::mat& sign_narrative, const arma::mat& sign_B, const arma::field<arma::mat>& Z, const int& Nf, const int& max_tries) {
+        typedef SEXP(*Ptr_sample_Q)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_sample_Q p_sample_Q = NULL;
         if (p_sample_Q == NULL) {
-            validateSignature("arma::field<arma::mat>(*sample_Q)(const int&,const arma::mat&,const arma::mat&,arma::mat&,arma::mat&,arma::mat&,const Rcpp::List&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&)");
+            validateSignature("arma::field<arma::mat>(*sample_Q)(const int&,const arma::mat&,const arma::mat&,arma::mat&,arma::mat&,arma::mat&,const Rcpp::List&,const arma::cube&,const arma::mat&,const arma::mat&,const arma::field<arma::mat>&,const int&,const int&)");
             p_sample_Q = (Ptr_sample_Q)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_sample_Q");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_sample_Q(Shield<SEXP>(Rcpp::wrap(p)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(B)), Shield<SEXP>(Rcpp::wrap(h_invp)), Shield<SEXP>(Rcpp::wrap(chol_Sigma)), Shield<SEXP>(Rcpp::wrap(prior)), Shield<SEXP>(Rcpp::wrap(sign_irf)), Shield<SEXP>(Rcpp::wrap(sign_narrative)), Shield<SEXP>(Rcpp::wrap(sign_B)), Shield<SEXP>(Rcpp::wrap(Z)), Shield<SEXP>(Rcpp::wrap(max_tries)));
+            rcpp_result_gen = p_sample_Q(Shield<SEXP>(Rcpp::wrap(p)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(B)), Shield<SEXP>(Rcpp::wrap(h_invp)), Shield<SEXP>(Rcpp::wrap(chol_Sigma)), Shield<SEXP>(Rcpp::wrap(prior)), Shield<SEXP>(Rcpp::wrap(sign_irf)), Shield<SEXP>(Rcpp::wrap(sign_narrative)), Shield<SEXP>(Rcpp::wrap(sign_B)), Shield<SEXP>(Rcpp::wrap(Z)), Shield<SEXP>(Rcpp::wrap(Nf)), Shield<SEXP>(Rcpp::wrap(max_tries)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -443,6 +569,237 @@ namespace bsvarSIGNs {
         if (rcpp_result_gen.inherits("try-error"))
             throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
         return Rcpp::as<arma::field<arma::mat> >(rcpp_result_gen);
+    }
+
+    inline arma::field<arma::mat> sample_restricted_B_cpp(const arma::mat& post_B, const arma::mat& post_V, const arma::mat& Sigma, const int& p, const int& N, const int& Nf, const int& K) {
+        typedef SEXP(*Ptr_sample_restricted_B_cpp)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_sample_restricted_B_cpp p_sample_restricted_B_cpp = NULL;
+        if (p_sample_restricted_B_cpp == NULL) {
+            validateSignature("arma::field<arma::mat>(*sample_restricted_B_cpp)(const arma::mat&,const arma::mat&,const arma::mat&,const int&,const int&,const int&,const int&)");
+            p_sample_restricted_B_cpp = (Ptr_sample_restricted_B_cpp)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_sample_restricted_B_cpp");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_sample_restricted_B_cpp(Shield<SEXP>(Rcpp::wrap(post_B)), Shield<SEXP>(Rcpp::wrap(post_V)), Shield<SEXP>(Rcpp::wrap(Sigma)), Shield<SEXP>(Rcpp::wrap(p)), Shield<SEXP>(Rcpp::wrap(N)), Shield<SEXP>(Rcpp::wrap(Nf)), Shield<SEXP>(Rcpp::wrap(K)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<arma::field<arma::mat> >(rcpp_result_gen);
+    }
+
+    inline double log_dgamma(const double& x, const double& k, const double& theta) {
+        typedef SEXP(*Ptr_log_dgamma)(SEXP,SEXP,SEXP);
+        static Ptr_log_dgamma p_log_dgamma = NULL;
+        if (p_log_dgamma == NULL) {
+            validateSignature("double(*log_dgamma)(const double&,const double&,const double&)");
+            p_log_dgamma = (Ptr_log_dgamma)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_log_dgamma");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_log_dgamma(Shield<SEXP>(Rcpp::wrap(x)), Shield<SEXP>(Rcpp::wrap(k)), Shield<SEXP>(Rcpp::wrap(theta)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double log_dinvgamma(const double& x, const double& alpha, const double& beta) {
+        typedef SEXP(*Ptr_log_dinvgamma)(SEXP,SEXP,SEXP);
+        static Ptr_log_dinvgamma p_log_dinvgamma = NULL;
+        if (p_log_dinvgamma == NULL) {
+            validateSignature("double(*log_dinvgamma)(const double&,const double&,const double&)");
+            p_log_dinvgamma = (Ptr_log_dinvgamma)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_log_dinvgamma");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_log_dinvgamma(Shield<SEXP>(Rcpp::wrap(x)), Shield<SEXP>(Rcpp::wrap(alpha)), Shield<SEXP>(Rcpp::wrap(beta)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double log_prior_hyper(const arma::vec& hyper, const arma::vec& model, const Rcpp::List& prior) {
+        typedef SEXP(*Ptr_log_prior_hyper)(SEXP,SEXP,SEXP);
+        static Ptr_log_prior_hyper p_log_prior_hyper = NULL;
+        if (p_log_prior_hyper == NULL) {
+            validateSignature("double(*log_prior_hyper)(const arma::vec&,const arma::vec&,const Rcpp::List&)");
+            p_log_prior_hyper = (Ptr_log_prior_hyper)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_log_prior_hyper");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_log_prior_hyper(Shield<SEXP>(Rcpp::wrap(hyper)), Shield<SEXP>(Rcpp::wrap(model)), Shield<SEXP>(Rcpp::wrap(prior)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double log_mvgamma(const int& n, const double& x) {
+        typedef SEXP(*Ptr_log_mvgamma)(SEXP,SEXP);
+        static Ptr_log_mvgamma p_log_mvgamma = NULL;
+        if (p_log_mvgamma == NULL) {
+            validateSignature("double(*log_mvgamma)(const int&,const double&)");
+            p_log_mvgamma = (Ptr_log_mvgamma)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_log_mvgamma");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_log_mvgamma(Shield<SEXP>(Rcpp::wrap(n)), Shield<SEXP>(Rcpp::wrap(x)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double log_ml(const arma::mat& b, const arma::mat& Omega, const arma::mat& Psi, const int& d, const arma::mat& Y, const arma::mat& X) {
+        typedef SEXP(*Ptr_log_ml)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_log_ml p_log_ml = NULL;
+        if (p_log_ml == NULL) {
+            validateSignature("double(*log_ml)(const arma::mat&,const arma::mat&,const arma::mat&,const int&,const arma::mat&,const arma::mat&)");
+            p_log_ml = (Ptr_log_ml)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_log_ml");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_log_ml(Shield<SEXP>(Rcpp::wrap(b)), Shield<SEXP>(Rcpp::wrap(Omega)), Shield<SEXP>(Rcpp::wrap(Psi)), Shield<SEXP>(Rcpp::wrap(d)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double log_ml_dummy(const arma::vec& hyper, const arma::vec& model, const arma::mat& Y, const arma::mat& X, const Rcpp::List& prior) {
+        typedef SEXP(*Ptr_log_ml_dummy)(SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_log_ml_dummy p_log_ml_dummy = NULL;
+        if (p_log_ml_dummy == NULL) {
+            validateSignature("double(*log_ml_dummy)(const arma::vec&,const arma::vec&,const arma::mat&,const arma::mat&,const Rcpp::List&)");
+            p_log_ml_dummy = (Ptr_log_ml_dummy)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_log_ml_dummy");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_log_ml_dummy(Shield<SEXP>(Rcpp::wrap(hyper)), Shield<SEXP>(Rcpp::wrap(model)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(prior)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline double log_posterior_hyper(const arma::vec& hyper, const arma::vec& model, const arma::mat& Y, const arma::mat& X, const Rcpp::List& prior) {
+        typedef SEXP(*Ptr_log_posterior_hyper)(SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_log_posterior_hyper p_log_posterior_hyper = NULL;
+        if (p_log_posterior_hyper == NULL) {
+            validateSignature("double(*log_posterior_hyper)(const arma::vec&,const arma::vec&,const arma::mat&,const arma::mat&,const Rcpp::List&)");
+            p_log_posterior_hyper = (Ptr_log_posterior_hyper)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_log_posterior_hyper");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_log_posterior_hyper(Shield<SEXP>(Rcpp::wrap(hyper)), Shield<SEXP>(Rcpp::wrap(model)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(prior)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
+    inline arma::mat extend_hyper(const arma::vec& init, const arma::vec& model, const arma::mat& hypers) {
+        typedef SEXP(*Ptr_extend_hyper)(SEXP,SEXP,SEXP);
+        static Ptr_extend_hyper p_extend_hyper = NULL;
+        if (p_extend_hyper == NULL) {
+            validateSignature("arma::mat(*extend_hyper)(const arma::vec&,const arma::vec&,const arma::mat&)");
+            p_extend_hyper = (Ptr_extend_hyper)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_extend_hyper");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_extend_hyper(Shield<SEXP>(Rcpp::wrap(init)), Shield<SEXP>(Rcpp::wrap(model)), Shield<SEXP>(Rcpp::wrap(hypers)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<arma::mat >(rcpp_result_gen);
+    }
+
+    inline arma::mat narrow_hyper(const arma::vec& model, arma::mat hypers) {
+        typedef SEXP(*Ptr_narrow_hyper)(SEXP,SEXP);
+        static Ptr_narrow_hyper p_narrow_hyper = NULL;
+        if (p_narrow_hyper == NULL) {
+            validateSignature("arma::mat(*narrow_hyper)(const arma::vec&,arma::mat)");
+            p_narrow_hyper = (Ptr_narrow_hyper)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_narrow_hyper");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_narrow_hyper(Shield<SEXP>(Rcpp::wrap(model)), Shield<SEXP>(Rcpp::wrap(hypers)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<arma::mat >(rcpp_result_gen);
+    }
+
+    inline arma::mat sample_hyper(const int& S, const int& start, const arma::vec& init, const arma::vec& model, const arma::mat& Y, const arma::mat& X, const arma::mat& W, const Rcpp::List& prior) {
+        typedef SEXP(*Ptr_sample_hyper)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_sample_hyper p_sample_hyper = NULL;
+        if (p_sample_hyper == NULL) {
+            validateSignature("arma::mat(*sample_hyper)(const int&,const int&,const arma::vec&,const arma::vec&,const arma::mat&,const arma::mat&,const arma::mat&,const Rcpp::List&)");
+            p_sample_hyper = (Ptr_sample_hyper)R_GetCCallable("bsvarSIGNs", "_bsvarSIGNs_sample_hyper");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_sample_hyper(Shield<SEXP>(Rcpp::wrap(S)), Shield<SEXP>(Rcpp::wrap(start)), Shield<SEXP>(Rcpp::wrap(init)), Shield<SEXP>(Rcpp::wrap(model)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(W)), Shield<SEXP>(Rcpp::wrap(prior)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<arma::mat >(rcpp_result_gen);
     }
 
     inline arma::mat qr_sign_cpp(const arma::mat& A) {

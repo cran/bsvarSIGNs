@@ -1,7 +1,7 @@
 
 #include <RcppArmadillo.h>
 
-#include "utils.h"
+#include "utils_bsvarsigns.h"
 #include "restrictions_narrative.h"
 #include "restrictions_zero.h"
 #include "compute.h"
@@ -44,6 +44,7 @@ arma::field<arma::mat> sample_Q(
     const arma::mat&              sign_narrative,
     const arma::mat&              sign_B,
     const arma::field<arma::mat>& Z,
+    const int&                    Nf,
     const int&                    max_tries
 ) {
   
@@ -68,7 +69,16 @@ arma::field<arma::mat> sample_Q(
     if (has_zero) {
       Q = rzeroQ(Z, irf.slice(0));
     } else {
-      Q = rortho_cpp(N);
+      if (Nf == 0) {
+        Q = rortho_cpp(N);
+      } else {
+        int Nd = N - Nf;
+        mat Qf = rortho_cpp(Nf);
+        mat Qd = rortho_cpp(Nd);
+        Q = arma::zeros(N, N);
+        Q.submat(0, 0, Nf - 1, Nf - 1) = Qf;
+        Q.submat(Nf, Nf, N - 1, N - 1) = Qd;
+      }
     }
     
     shocks = Q.t() * lt_shocks;
@@ -84,22 +94,24 @@ arma::field<arma::mat> sample_Q(
     n_tries++;
   }
   
-  double w = 1;
+  double log_w_out = 0;
   if (!success) {
-    w = 0;
+    log_w_out = -arma::datum::inf;
   } else {
+    double log_w = 0;
     if (has_narrative) {
-      w *= weight_narrative(T, sign_narrative, irf);  
+      log_w += log_weight_narrative(T, sign_narrative, irf);  
     }
     if (has_zero) {
-      w *= weight_zero(Z, B, h_invp, Q);
+      log_w += log_weight_zero(Z, B, h_invp, Q);
     }
+    log_w_out = log_w;
   }
   
   field<mat> result(3);
   result(0) = Q;
   result(1) = shocks;
-  result(2) = w;
+  result(2) = log_w_out;
   
   return result;
 }

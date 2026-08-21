@@ -266,6 +266,9 @@ specify_prior_bsvarSIGN = R6::R6Class(
     #' @field psi.shape a positive scalar - the shape of the inverted gamma prior for \eqn{\psi}.
     psi.shape   = NA,
     
+    #' @field covid NULL or a positive integer indicating the start of the COVID-19 pandemic.
+    covid       = NULL,
+    
     #' @description
     #' Create a new prior specification PriorBSVAR.
     #' @param data the \code{TxN} data matrix of observations.
@@ -282,7 +285,6 @@ specify_prior_bsvarSIGN = R6::R6Class(
     #' prior$B # show autoregressive prior mean
     #' 
     initialize = function(data, p, exogenous = NULL, stationary = rep(FALSE,  ncol(data))) {
-      
       stopifnot("Argument p must be a positive integer number." = p > 0 & p %% 1 == 0)
       
       data_m  = bsvars::specify_data_matrices$new(data, p, exogenous)
@@ -314,27 +316,13 @@ specify_prior_bsvarSIGN = R6::R6Class(
         s2.ols[n] = sum(((diag(T - p - 5) - x %*% solve(t(x) %*% x) %*% t(x)) %*% y)^2) / (T - p - 5)
       }
       
-      hyper              = matrix(NA, N + 3, 1)
+      hyper              = matrix(NA, N + 3 + 4, 1)
       hyper[1:3]         = c(1, 1, 0.2)
       hyper[4:(N + 3),]  = s2.ols
+      hyper[(N + 4):(N + 7),] = c(1, 1, 1, 0.8)
       
       scale   = gamma_scale(1, 1)
       shape   = gamma_shape(1, 1)
-      
-      ybar    = colMeans(matrix(Y[1:p,], ncol = N))
-      Ysoc    = diag(ybar)
-      Ysur    = t(ybar)
-      Xsoc    = cbind(kronecker(t(rep(1, p)), Ysoc), matrix(0, N, d + 1))
-      Xsur    = cbind(kronecker(t(rep(1, p)), Ysur), 1, matrix(0, 1, d))
-      
-      # Ystar   = rbind(diag(ybar), ybar)
-      # Xstar   = Ystar
-      # if (p > 1) {
-      #   for (i in 2:p) {
-      #     Xstar = cbind(Xstar, Ystar)
-      #   }
-      # }
-      # Xstar   = cbind(Xstar, c(rep(0, N), 1), matrix(0, N + 1, d))
       
       self$p             = p
       self$hyper         = hyper
@@ -344,6 +332,12 @@ specify_prior_bsvarSIGN = R6::R6Class(
       self$nu            = N + 2
       self$Y             = t(Y)
       self$X             = t(X)
+      ybar    = colMeans(matrix(Y[1:p,], ncol = N))
+      Ysoc    = diag(ybar)
+      Xsoc    = cbind(kronecker(t(rep(1, p)), Ysoc), matrix(0, N, d + 1))
+      Ysur    = t(ybar)
+      Xsur    = cbind(kronecker(t(rep(1, p)), Ysur), 1, matrix(0, 1, d))
+      
       self$Ysoc          = t(Ysoc)
       self$Xsoc          = t(Xsoc)
       self$Ysur          = t(Ysur)
@@ -385,84 +379,10 @@ specify_prior_bsvarSIGN = R6::R6Class(
         lambda.scale = self$lambda.scale,
         lambda.shape = self$lambda.shape,
         psi.scale    = self$psi.scale,
-        psi.shape    = self$psi.shape
+        psi.shape    = self$psi.shape,
+        covid        = ifelse(is.null(self$covid), -1, self$covid)
       )
-    }, # END get_prior
-    
-    #' @description
-    #' Estimates hyper-parameters with adaptive Metropolis algorithm.
-    #' 
-    #' @param mu whether to estimate the hyper-parameter in the 
-    #' sum-of-coefficients dummy prior.
-    #' @param delta whether to estimate the hyper-parameter in the 
-    #' single-unit-root dummy prior.
-    #' @param lambda whether to estimate the hyper-parameter of the 
-    #' shrinkage in the Minnesota prior.
-    #' @param psi whether to estimate the hyper-parameter of the 
-    #' variances in the Minnesota prior.
-    #' @param S number of MCMC draws.
-    #' @param burn_in number of burn-in draws.
-    #' 
-    #' @examples 
-    #' # specify the model and set seed
-    #' set.seed(123)
-    #' data(optimism)
-    #' prior = specify_prior_bsvarSIGN$new(optimism, p = 4)
-    #' 
-    #' # estimate hyper parameters with adaptive Metropolis algorithm
-    #' prior$estimate_hyper(S = 10, psi = TRUE)
-    #'
-    #' # trace plot
-    #' hyper = t(prior$hyper)
-    #' colnames(hyper) = c("mu", "delta", "lambda", paste("psi", 1:5, sep = ""))
-    #' plot.ts(hyper)
-    #' 
-    estimate_hyper = function(
-      S = 10000, burn_in = S / 2,
-      mu = FALSE, delta = FALSE, lambda = TRUE, psi = FALSE
-      ) {
-      
-      model = c(mu, delta, lambda, psi)
-      
-      if (all(!model)) {
-        stop("At least one of the hyper-parameters must be estimated.")
-      }
-      
-      hyper  = matrix(self$hyper[, ncol(self$hyper)])
-      init   = narrow_hyper(model, hyper)
-      prior  = self$get_prior()
-      
-      prior$B    = t(prior$A)
-      prior$Ysoc = t(prior$Ysoc)
-      prior$Xsoc = t(prior$Xsoc)
-      prior$Ysur = t(prior$Ysur)
-      prior$Xsur = t(prior$Xsur)
-      
-      result = stats::optim(
-        init,
-        \(x) -log_posterior_hyper(extend_hyper(hyper, model, matrix(x)), 
-                                  model, t(self$Y), t(self$X), prior),
-        method  = 'L-BFGS-B',
-        lower   = rep(0, length(init)),
-        upper   = init * 100,
-        hessian = TRUE
-        )
-
-      mode       = extend_hyper(hyper, model, matrix(result$par))
-      variance   = result$hessian
-
-      if (length(init) == 1){
-        variance = 1 / variance
-      } else {
-        e        = eigen(variance)
-        variance = e$vectors %*% diag(as.vector(1 / abs(e$values))) %*% t(e$vectors)
-      }
-      
-      self$hyper = sample_hyper(S, burn_in, mode, model, 
-                                t(self$Y), t(self$X), variance, prior)
-      self$hyper = self$hyper[, -(1:burn_in)]
-    } # END estimate_hyper
-    
+    } # END get_prior    
   ) # END public
 ) # END specify_prior_bsvarSIGN
 
@@ -641,6 +561,13 @@ specify_identification_bsvarSIGN = R6::R6Class(
 #' @export
 specify_bsvarSIGN = R6::R6Class(
   "BSVARSIGN",
+  private = list(
+    hyper_mu = TRUE,
+    hyper_delta = TRUE,
+    hyper_lambda = TRUE,
+    hyper_psi = TRUE,
+    hyper_covid = NULL
+  ),
   
   public = list(
     
@@ -659,6 +586,12 @@ specify_bsvarSIGN = R6::R6Class(
     #' @field starting_values an object StartingValuesBSVARSIGN with the starting values.
     starting_values        = list(),
     
+    #' @field num_foreign_vars a non-negative integer specifying the number of foreign variables.
+    num_foreign_vars       = numeric(),
+    
+    #' @field mc.cores number of cores to use for parallel computing.
+    mc.cores               = numeric(),
+    
     #' @description
     #' Create a new specification of the Bayesian Structural VAR model with sign and narrative restrictions BSVARSIGN.
     #' @param data a \code{(T+p)xN} matrix with time series data.
@@ -675,9 +608,16 @@ specify_bsvarSIGN = R6::R6Class(
     #' @param max_tries a positive integer with the maximum number of iterations
     #' for finding a rotation matrix \eqn{Q} that would satisfy sign restrictions
     #' @param exogenous a \code{(T+p)xd} matrix of exogenous variables.
+    #' @param foreign a matrix of foreign variables for a Small Open Economy (SOE) model. Defaults to NULL.
     #' @param stationary an \code{N} logical vector - its element set to \code{FALSE} sets
     #' the prior mean for the autoregressive parameters of the \code{N}th equation to the white noise process,
     #' otherwise to random walk.
+    #' @param hyper_mu whether to estimate the hyper-parameter in the sum-of-coefficients dummy prior.
+    #' @param hyper_delta whether to estimate the hyper-parameter in the single-unit-root dummy prior.
+    #' @param hyper_lambda whether to estimate the hyper-parameter of the shrinkage in the Minnesota prior.
+    #' @param hyper_psi whether to estimate the hyper-parameter of the variances in the Minnesota prior.
+    #' @param hyper_covid NULL or positive integer indicating the start of the COVID-19 pandemic.
+    #' @param mc.cores number of cores to use for parallel computing. Default is 1. We recommend setting it to \code{parallel::detectCores() - 1}.
     #' @return A new complete specification for the Bayesian Structural VAR model BSVARSIGN.
     initialize = function(
     data,
@@ -687,10 +627,28 @@ specify_bsvarSIGN = R6::R6Class(
     sign_structural,
     max_tries = Inf,
     exogenous = NULL,
-    stationary = rep(FALSE, ncol(data))
+    foreign = NULL,
+    stationary = NULL,
+    hyper_mu = TRUE,
+    hyper_delta = TRUE,
+    hyper_lambda = TRUE,
+    hyper_psi = TRUE,
+    hyper_covid = NULL,
+    mc.cores = 1
     ) {
       stopifnot("Argument p has to be a positive integer." = ((p %% 1) == 0 & p > 0))
       self$p        = p
+      
+      if (!is.null(foreign)) {
+        if (!is.matrix(foreign)) foreign = as.matrix(foreign)
+        if (nrow(foreign) != nrow(data)) stop("foreign must have the same number of rows as data.")
+        data = cbind(foreign, data)
+        num_foreign_vars = ncol(foreign)
+      } else {
+        num_foreign_vars = 0
+      }
+      
+      if (is.null(stationary)) stationary = rep(FALSE, ncol(data))
       
       TT            = nrow(data)
       T             = TT - self$p
@@ -723,6 +681,23 @@ specify_bsvarSIGN = R6::R6Class(
       }
       verify_all(N, sign_irf, sign_narrative, sign_structural)
       
+      if (num_foreign_vars > 0) {
+        zero_irf = sign_irf[, , 1] == 0
+        zero_irf[is.na(zero_irf)] = 0
+        if (sum(zero_irf) > 0) {
+          stop("Zero restrictions are not supported for Small Open Economy (SOE) models.")
+        }
+      }
+      
+      private$hyper_mu             = hyper_mu
+      private$hyper_delta          = hyper_delta
+      private$hyper_lambda         = hyper_lambda
+      private$hyper_psi            = hyper_psi
+      private$hyper_covid          = hyper_covid
+      
+      self$num_foreign_vars        = num_foreign_vars
+      self$mc.cores                = mc.cores
+      
       B                            = matrix(FALSE, N, N)
       B[lower.tri(B, diag = TRUE)] = TRUE
       
@@ -734,7 +709,7 @@ specify_bsvarSIGN = R6::R6Class(
                                                                           max_tries)
       self$prior                   = specify_prior_bsvarSIGN$new(data, p, exogenous,
                                                                  stationary)
-      self$starting_values         = bsvars::specify_starting_values_bsvar$new(N, self$p, d)
+      # self$starting_values         = bsvars::specify_starting_values_bsvar$new(N, self$p, d)
     }, # END initialize
     
     #' @description
@@ -752,9 +727,119 @@ specify_bsvarSIGN = R6::R6Class(
     #' # get the data matrices
     #' spec$get_data_matrices()
     #'
-    get_data_matrices = function() {
+    get_data_matrices    = function() {
       self$data_matrices$clone()
     }, # END get_data_matrices
+    
+    #' @description
+    #' Sets the sum-of-coefficients and single-unit-root dummy observations to zero 
+    #' (removes the dummy observation prior).
+    #' 
+    #' @examples
+    #' # specify the model
+    #' data(optimism)
+    #' spec = specify_bsvarSIGN$new(optimism, p = 4)
+    #' spec$no_dummy_observations() # remove dummy observations
+    #' 
+    no_dummy_observations = function() {
+      self$prior$Ysoc = matrix(NA, nrow(self$prior$Ysoc), 0)
+      self$prior$Xsoc = matrix(NA, nrow(self$prior$Xsoc), 0)
+      self$prior$Ysur = matrix(NA, nrow(self$prior$Ysur), 0)
+      self$prior$Xsur = matrix(NA, nrow(self$prior$Xsur), 0)
+    }, # END no_dummy_observations
+    
+    #' @description
+    #' Estimates hyper-parameters with adaptive Metropolis algorithm.
+    #' 
+    #' @param S number of MCMC draws.
+    #' @param burn_in number of burn-in draws.
+    #' 
+    #' @examples 
+    #' # specify the model and set seed
+    #' set.seed(123)
+    #' data(optimism)
+    #' spec = specify_bsvarSIGN$new(optimism, p = 4)
+    #' 
+    #' # estimate hyper parameters with adaptive Metropolis algorithm
+    #' spec$estimate_hyper(S = 10)
+    #'
+    #' # trace plot
+    #' hyper = t(spec$prior$hyper)[, 4:8]
+    #' colnames(hyper) = paste("psi", 1:5, sep = "")
+    #' plot.ts(hyper)
+    #' 
+    estimate_hyper = function(
+      S = 10000, burn_in = S / 2
+      ) {
+      
+      model = c(private$hyper_mu, private$hyper_delta, private$hyper_lambda, private$hyper_psi, !is.null(private$hyper_covid))
+      covid = private$hyper_covid
+      
+      if (all(!model)) {
+        stop("At least one of the hyper-parameters must be estimated.")
+      }
+      
+      if (!is.null(covid)) {
+        if (covid %% 1 != 0 || covid <= 0) {
+          stop("covid must be a positive integer or NULL")
+        }
+        if (covid > ncol(self$prior$Y)) {
+          stop(paste0("covid must be less than or equal to the number of observations used for estimation (T = ", ncol(self$prior$Y), "). Please remember that the first p observations are used as lags."))
+        }
+      }
+      
+      hyper  = matrix(self$prior$hyper[, ncol(self$prior$hyper)])
+      init   = .Call(`_bsvarSIGNs_narrow_hyper`, model, hyper)
+      
+      Y_temp = t(self$prior$Y)
+      N      = ncol(Y_temp)
+      p      = self$p
+      K      = nrow(self$prior$X)
+      d      = K - 1 - N * p
+      
+      self$prior$covid = covid
+
+      prior      = self$prior$get_prior()
+      prior$B    = t(prior$A)
+      prior$Ysoc = t(prior$Ysoc)
+      prior$Xsoc = t(prior$Xsoc)
+      prior$Ysur = t(prior$Ysur)
+      prior$Xsur = t(prior$Xsur)
+      
+      lb = rep(0, length(init))
+      ub = init * 100
+      
+      if (!is.null(covid)) {
+        idx = (length(init) - 3):length(init)
+        lb[idx] = c(1, 1, 1, 0)
+        ub[idx] = c(Inf, Inf, Inf, 1)
+      }
+      
+      result = stats::optim(
+        init,
+        \(x) -.Call(`_bsvarSIGNs_log_posterior_hyper`,
+              .Call(`_bsvarSIGNs_extend_hyper`, hyper, model, matrix(x)),
+              model, t(self$prior$Y), t(self$prior$X), prior),
+        method  = 'L-BFGS-B',
+        lower   = lb,
+        upper   = ub,
+        hessian = TRUE
+        )
+
+      mode       = .Call(`_bsvarSIGNs_extend_hyper`, hyper, model, matrix(result$par))
+      variance   = result$hessian
+
+      if (length(init) == 1){
+        variance = 1 / variance
+      } else {
+        e        = eigen(variance)
+        variance = e$vectors %*% diag(as.vector(1 / abs(e$values))) %*% t(e$vectors)
+      }
+      
+      self$prior$hyper = .Call(`_bsvarSIGNs_sample_hyper`, S, burn_in, mode, model,
+             t(self$prior$Y), t(self$prior$X), variance, prior)
+      self$prior$hyper = self$prior$hyper[, -(1:burn_in)]
+    }, # END estimate_hyper
     
     #' @description
     #' Returns the identifying restrictions as the IdentificationBSVARSIGN object.
@@ -809,7 +894,7 @@ specify_bsvarSIGN = R6::R6Class(
     #' spec$get_starting_values()
     #'
     get_starting_values = function() {
-      self$starting_values$clone()
+      # self$starting_values$clone()
     } # END get_starting_values
   ) # END public
 ) # END specify_bsvarSIGN
